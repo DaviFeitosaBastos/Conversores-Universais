@@ -1,5 +1,6 @@
 from time import sleep
 import locale
+import requests
 # O locale define o formato regional de números, datas, moedas, etc.
 # Aqui, estamos configurando para o padrão brasileiro (pt_BR),
 # para que valores em Reais sejam exibidos corretamente como "R$ 1.234,56".
@@ -9,6 +10,23 @@ try:
     locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8') # MacOS/linux
 except:
     locale.setlocale(locale.LC_ALL, 'Portuguese_Brazil.1252') # Windows
+
+def get_dolar_ptax():
+    """
+    Busca a cotação atual do dólar (PTAX) usando a AwesomeAPI.
+    
+    Retorna:
+        float: Valor atual do dólar em reais.
+    """
+    try:
+        url = "https://economia.awesomeapi.com.br/json/last/USD-BRL"
+        response = requests.get(url)
+        response.raise_for_status()
+        dados = response.json()
+        return float(dados['USDBRL']['bid'])  # valor de compra
+    except Exception as e:
+        print("Erro ao buscar a cotação do dólar. Usando valor fixo como fallback.")
+        return 5.47  # valor de fallback se der erro
 
 def main_menu():
     print("""
@@ -92,11 +110,12 @@ def conversor_real_for_dolar():
     while True:
         try:
             valor = input(f"\nDigite quantos Reais deseja saber em Dolares: ").replace(',','.')
+            cotacao = get_dolar_ptax()
             real = float(valor)
-            dolar = (real / 5.4759)
+            dolar = (real / cotacao)
             valor_formatado = locale.currency(real, grouping=True)
             sleep(0.5)
-            print(f"\n{valor_formatado} são $ {dolar:,.2f} Dolares")
+            print(f"\n{valor_formatado} são $ {dolar:,.2f} Dólares (Cotação atual: R$ {cotacao:.2f})")
         except ValueError:
             print("Entrada inválida. Digite um número válido.")
             continue
