@@ -20,8 +20,7 @@ Bem-vindo ao **Conversor Universal**, um projeto simples em Python que realiza c
 
 ## ▶️ Como executar
 
-> Requisitos: Python 3.13.5 instalado
-> Requisitos: pip install request (Caso não tenha!)
+> Requisitos: Python 3.13.5 instalado e pip install request (Caso não tenha!)
 
 1. Clone este repositório:
 ```bash
